@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-card-block-requests-table
+      author: goylik
+      changes:
+        - createTable:
+            tableName: card_block_requests
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: card_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: processed_admin_id
+                  type: bigint
+
+              - column:
+                  name: processed_at
+                  type: timestamp
+
+        - addForeignKeyConstraint:
+            baseTableName: card_block_requests
+            baseColumnNames: card_id
+            referencedTableName: bank_cards
+            referencedColumnNames: id
+            constraintName: fk_card_block_request_card
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: card_block_requests
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_card_block_request_user
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: card_block_requests
+            baseColumnNames: processed_admin_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_card_block_request_processed_admin
+            onDelete: SET NULL

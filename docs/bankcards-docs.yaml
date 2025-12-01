@@ -1,0 +1,1319 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+tags:
+- name: Authentication
+  description: Endpoints for user registration and authentication
+- name: User Cards
+  description: Operations for managing user bank cards
+- name: Admin Users
+  description: Administration endpoints for managing user accounts
+- name: Admin Card Block Requests
+  description: Endpoints for managing card block requests by admin
+- name: Transactions
+  description: Operations related to user transactions
+- name: Admin Cards
+  description: Endpoints for managing bank cards by admin
+paths:
+  /api/admin/users:
+    get:
+      tags:
+      - Admin Users
+      summary: Get all users
+      description: Returns a paginated list of all users in the system.
+      operationId: getAllUsers
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Page of users returned
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageUserResponse"
+    put:
+      tags:
+      - Admin Users
+      summary: Change user role
+      description: Updates the role of an existing user. Only accessible to administrators.
+      operationId: changeUserRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangeUserRoleRequest"
+        required: true
+      responses:
+        "400":
+          description: Invalid request data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: User role successfully updated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /api/admin/cards/{cardId}/block:
+    put:
+      tags:
+      - Admin Cards
+      summary: Block a card
+      description: Blocks a card by its ID
+      operationId: blockCard
+      parameters:
+      - name: cardId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+      responses:
+        "400":
+          description: Card is expired or already blocked.
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Card not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Card blocked successfully
+  /api/admin/cards/{cardId}/activate:
+    put:
+      tags:
+      - Admin Cards
+      summary: Activate a card
+      description: Activates a card by its ID
+      operationId: activateCard
+      parameters:
+      - name: cardId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+      responses:
+        "400":
+          description: Card is expired or already active.
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Card not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Card activated successfully
+  /api/admin/block-requests/{requestId}/reject:
+    put:
+      tags:
+      - Admin Card Block Requests
+      summary: Reject a card block request
+      description: Reject a specific card block request by its ID
+      operationId: rejectCardBlockRequest
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+      responses:
+        "400":
+          description: Request is already processed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Card block request not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Request rejected successfully
+  /api/admin/block-requests/{requestId}/approve:
+    put:
+      tags:
+      - Admin Card Block Requests
+      summary: Approve a card block request
+      description: Approve a specific card block request by its ID
+      operationId: approveCardBlockRequest
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+      responses:
+        "400":
+          description: Card is already blocked or expired or request is already processed.
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Card block request not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Request approved successfully
+  /api/user/transactions:
+    post:
+      tags:
+      - Transactions
+      summary: Make internal transfer
+      description: Transfers funds between two cards of the same user
+      operationId: makeInternalTransfer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InternalTransferRequest"
+        required: true
+      responses:
+        "400":
+          description: Invalid transfer request data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "201":
+          description: Transaction created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+  /api/user/cards/{cardId}/request-block:
+    post:
+      tags:
+      - User Cards
+      summary: Request card block
+      description: Creates a request to block a specific user card
+      operationId: requestCardBlock
+      parameters:
+      - name: cardId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+      responses:
+        "400":
+          description: Card is already blocked or expired
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Card not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Request already exists
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "201":
+          description: Card block request created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CardBlockRequestResponse"
+  /api/auth/signup:
+    post:
+      tags:
+      - Authentication
+      summary: User signup
+      description: Registers a new user with the provided signup information
+      operationId: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupRequest"
+        required: true
+      responses:
+        "400":
+          description: Invalid signup request data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: User with the given email already exists
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "201":
+          description: User registered successfully
+  /api/auth/signin:
+    post:
+      tags:
+      - Authentication
+      summary: User signin
+      description: Authenticates a user and returns a JWT token
+      operationId: signin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Invalid email or password
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Authentication successful
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/admin/cards:
+    get:
+      tags:
+      - Admin Cards
+      summary: Get all cards
+      description: Returns a paginated list of all cards with optional filtering
+      operationId: getAllCards
+      parameters:
+      - name: filter
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/CardFilter"
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageCardResponse"
+    post:
+      tags:
+      - Admin Cards
+      summary: Create a new card
+      description: Creates a new bank card with the provided details
+      operationId: createCard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCardRequest"
+        required: true
+      responses:
+        "400":
+          description: Invalid request data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "201":
+          description: Card created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CardResponse"
+  /api/user/cards:
+    get:
+      tags:
+      - User Cards
+      summary: Get user cards
+      description: "Retrieves a paginated list of the current user's bank cards, optionally\
+        \ filtered"
+      operationId: getUserCards
+      parameters:
+      - name: filter
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/CardFilter"
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Cards retrieved successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CardResponse"
+  /api/user/cards/{cardId}:
+    get:
+      tags:
+      - User Cards
+      summary: Get card details
+      description: Retrieves detailed information for a specific user card
+      operationId: getUserCardDetails
+      parameters:
+      - name: cardId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Card not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: Card details retrieved successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CardResponse"
+  /api/admin/users/{id}:
+    get:
+      tags:
+      - Admin Users
+      summary: Get user by ID
+      description: Returns user details by their unique identifier.
+      operationId: getUserById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: User data returned
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+    delete:
+      tags:
+      - Admin Users
+      summary: Soft delete a user
+      description: Marks a user as deleted. The user is not removed from the database
+        physically.
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "204":
+          description: User soft-deleted
+  /api/admin/block-requests/pending:
+    get:
+      tags:
+      - Admin Card Block Requests
+      summary: Get pending card block requests
+      description: Returns a paginated list of card block requests that are pending
+        approval
+      operationId: getPendingCardBlockRequests
+      parameters:
+      - name: filter
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/CardBlockRequestFilter"
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageCardBlockRequestResponse"
+  /api/admin/cards/{cardId}:
+    delete:
+      tags:
+      - Admin Cards
+      summary: Soft delete a card
+      description: Marks a card as deleted. The card is not removed from the database
+        physically.
+      operationId: deleteCard
+      parameters:
+      - name: cardId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Card not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "204":
+          description: Card deleted successfully
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      description: Error response containing message and validation errors
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Validation failed
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+          description: Field-specific validation errors
+          example: "fieldName: message"
+    ChangeUserRoleRequest:
+      type: object
+      description: Request dto for updating a user's role
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: User ID whose role is being updated
+          example: 12
+        role:
+          type: string
+          description: New role to assign to the user
+          example: ADMIN
+          minLength: 1
+      required:
+      - role
+      - userId
+    UserResponse:
+      type: object
+      description: User information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: User ID
+          example: 1
+        email:
+          type: string
+          description: User email
+          example: user@mail.com
+        role:
+          type: string
+          description: User role
+          example: USER
+    InternalTransferRequest:
+      type: object
+      description: Request for performing an internal transfer between cards
+      properties:
+        fromCardId:
+          type: integer
+          format: int64
+          description: ID of the card from which money will be transferred
+          example: 10
+        toCardId:
+          type: integer
+          format: int64
+          description: ID of the recipient card
+          example: 15
+        amount:
+          type: number
+          description: Amount to transfer
+          example: 150.0
+          minimum: 1.00
+      required:
+      - amount
+      - fromCardId
+      - toCardId
+    TransactionResponse:
+      type: object
+      description: Details of the completed transaction
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Transaction ID
+          example: 100
+        maskedCardNumberFrom:
+          type: string
+          description: Masked sender card number
+          example: '**** **** **** 1111'
+        maskedCardNumberTo:
+          type: string
+          description: Masked receiver card number
+          example: '**** **** **** 2222'
+        amount:
+          type: number
+          description: Transaction amount
+          example: 50.0
+        createdAt:
+          type: string
+          format: date-time
+          description: Date and time when the transaction was created
+    CardBlockRequestResponse:
+      type: object
+      description: Response for a card block request
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Request ID
+          example: 10
+        status:
+          type: string
+          description: "Status of the request (PENDING, APPROVED, REJECTED)"
+          example: PENDING
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the request was created
+    SignupRequest:
+      type: object
+      description: Request for creating a new user account
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email
+          example: user@mail.com
+          maxLength: 100
+          minLength: 0
+        password:
+          type: string
+          description: User password
+          example: 123456
+          maxLength: 100
+          minLength: 6
+      required:
+      - email
+      - password
+    LoginRequest:
+      type: object
+      description: Request for user authentication
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email
+          example: user@mail.com
+          minLength: 1
+        password:
+          type: string
+          description: User password
+          example: 123456
+          minLength: 1
+      required:
+      - email
+      - password
+    AuthResponse:
+      type: object
+      description: Authentication response containing JWT and user details
+      properties:
+        jwt:
+          type: string
+          description: JWT access token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        id:
+          type: integer
+          format: int64
+          description: User ID
+          example: 1
+        email:
+          type: string
+          description: User email
+          example: user@mail.com
+        role:
+          type: string
+          description: User role
+          example: ADMIN
+    CreateCardRequest:
+      type: object
+      description: Request for creating a new bank card
+      properties:
+        ownerName:
+          type: string
+          description: Full name of the card owner
+          example: John Doe
+          maxLength: 100
+          minLength: 0
+        validityYears:
+          type: integer
+          format: int32
+          description: Validity period of the card in years
+          example: 3
+          maximum: 5
+          minimum: 1
+        userId:
+          type: integer
+          format: int64
+          description: ID of the user who will own the card
+          example: 123
+      required:
+      - ownerName
+      - userId
+    CardResponse:
+      type: object
+      description: Bank card details
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Card ID
+          example: 5
+        maskedCardNumber:
+          type: string
+          description: Masked card number
+          example: '**** **** **** 1234'
+        ownerName:
+          type: string
+          description: Owner name
+          example: John Doe
+        status:
+          type: string
+          description: "Card status (ACTIVE, BLOCKED, EXPIRED)"
+          example: ACTIVE
+        expiryDate:
+          type: string
+          description: Expiry date in MM/yyyy format
+          example: 11/2027
+        balance:
+          type: number
+          description: Card balance
+          example: 250.0
+    CardFilter:
+      type: object
+      description: Filter for searching user cards
+      properties:
+        status:
+          type: string
+          description: "Card status (ACTIVE, BLOCKED, EXPIRED)"
+          example: ACTIVE
+        userId:
+          type: integer
+          format: int64
+          description: User ID to filter cards by user
+          example: 1
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+    PageUserResponse:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserResponse"
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        empty:
+          type: boolean
+    PageableObject:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+    SortObject:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+    PageCardResponse:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/CardResponse"
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        empty:
+          type: boolean
+    CardBlockRequestFilter:
+      type: object
+      description: Filter for searching request to block a card
+      properties:
+        status:
+          type: string
+          description: "Status of request (PENDING, APPROVED, REJECTED)"
+          example: BLOCKED
+        userId:
+          type: integer
+          format: int64
+          description: User ID to filter requests by user
+          example: 123
+    PageCardBlockRequestResponse:
+      type: object
+      properties:
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/CardBlockRequestResponse"
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        empty:
+          type: boolean

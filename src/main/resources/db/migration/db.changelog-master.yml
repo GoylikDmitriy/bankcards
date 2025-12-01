@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: db/migration/changeset/create-users-table.yml
+  - include:
+      file: db/migration/changeset/create-bank-cards-table.yml
+  - include:
+      file: db/migration/changeset/create-card-block-requests-table.yml
+  - include:
+      file: db/migration/changeset/create-transactions-table.yml
+  - include:
+      file: db/migration/changeset/insert-users.yml
+  - include:
+      file: db/migration/changeset/insert-bank-cards.yml

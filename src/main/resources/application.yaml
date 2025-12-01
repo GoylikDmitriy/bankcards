@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: bankcards
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bankcards
+    username: postgres
+    password: 1234
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    enabled: true
+    change-log: classpath:db/migration/db.changelog-master.yml
+    default-schema: public
+
+server:
+  port: 8080
+
+springdoc:
+  api-docs:
+    path: "/v3/api-docs"
+  swagger-ui:
+    path: "/swagger-ui.html"
+
+app:
+  jwt:
+    secret: "Apda225RworiW014Pqeo41EqiurhSJJJKSLQe24Lk"
+    expiration-ms: 3600000
+    clock-skew-seconds: 30
+  bank-card:
+    encryption:
+      base64-key: "47yqIAFU7412I84RYWfsif12Ir42uuwt"
+    bank-bin: "300123"

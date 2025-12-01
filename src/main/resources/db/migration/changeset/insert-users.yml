@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users
+      author: goylik
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: "user@mail.com"
+              - column:
+                  name: password
+                  value: "$2a$10$c2.Jtw5VuLMHl90ZJrvXRumMkITIqHn2R5.c6cxX0ZTe.DS9hI1bS"
+              - column:
+                  name: role
+                  value: "USER"
+              - column:
+                  name: enabled
+                  value: "true"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: "admin@mail.com"
+              - column:
+                  name: password
+                  value: "$2a$10$c2.Jtw5VuLMHl90ZJrvXRumMkITIqHn2R5.c6cxX0ZTe.DS9hI1bS"
+              - column:
+                  name: role
+                  value: "ADMIN"
+              - column:
+                  name: enabled
+                  value: true

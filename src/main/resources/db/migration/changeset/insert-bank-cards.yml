@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-bank-cards
+      author: goylik
+      changes:
+        - insert:
+            tableName: bank_cards
+            columns:
+              - column:
+                  name: encrypted_card_number
+                  value: ENC(xxxxx1111)
+              - column:
+                  name: last4
+                  value: "1111"
+              - column:
+                  name: owner_name
+                  value: "Ivan Ivanov"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: expiry_date
+                  value: "2027-12"
+              - column:
+                  name: balance
+                  value: 1500.00
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: bank_cards
+            columns:
+              - column:
+                  name: encrypted_card_number
+                  value: ENC(xxxxx2222)
+              - column:
+                  name: last4
+                  value: "2222"
+              - column:
+                  name: owner_name
+                  value: "Ivan Ivanov"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: expiry_date
+                  value: "2028-12"
+              - column:
+                  name: balance
+                  value: 320.50
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: deleted
+                  valueBoolean: false
